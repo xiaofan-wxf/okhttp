@@ -30,6 +30,7 @@ public final class Request {
   final String method;
   final Headers headers;
   final @Nullable RequestBody body;
+  final boolean supportOffline;
   final Object tag;
 
   private volatile CacheControl cacheControl; // Lazily initialized.
@@ -38,6 +39,7 @@ public final class Request {
     this.url = builder.url;
     this.method = builder.method;
     this.headers = builder.headers.build();
+    this.supportOffline = builder.supportOffline;
     this.body = builder.body;
     this.tag = builder.tag != null ? builder.tag : this;
   }
@@ -52,6 +54,10 @@ public final class Request {
 
   public Headers headers() {
     return headers;
+  }
+
+  public boolean supportOffline() {
+    return supportOffline;
   }
 
   public String header(String name) {
@@ -101,6 +107,7 @@ public final class Request {
     HttpUrl url;
     String method;
     Headers.Builder headers;
+    boolean supportOffline;
     RequestBody body;
     Object tag;
 
@@ -114,12 +121,18 @@ public final class Request {
       this.method = request.method;
       this.body = request.body;
       this.tag = request.tag;
+      this.supportOffline = request.supportOffline;
       this.headers = request.headers.newBuilder();
     }
 
     public Builder url(HttpUrl url) {
       if (url == null) throw new NullPointerException("url == null");
       this.url = url;
+      return this;
+    }
+
+    public Builder supportOffline(boolean supportOffline) {
+      this.supportOffline = supportOffline;
       return this;
     }
 
